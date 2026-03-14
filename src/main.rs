@@ -1,33 +1,31 @@
 #![allow(unused)]
 
+mod combat;
+mod encounter;
 mod enemy;
+mod inventory;
+mod item;
 mod player;
 
 use crate::{
+    combat::initiate_combat,
+    encounter::rand_encounter,
     enemy::{Enemy, Type},
+    item::Item,
     player::{Class, Player},
 };
 
 fn main() {
     let name = String::from("player");
     let class = Class::Warrior;
-
     let mut player = Player::new(name, class);
-    let mut goblin = Enemy::new(Type::Goblin);
 
-    while goblin.is_alive() {
-        goblin.attack(&mut player);
+    let sword = Item::new(String::from("sword"));
+    let bow = Item::new(String::from("bow"));
+    let items = vec![sword, bow];
+    player.inventory.add_many(items);
 
-        println!(
-            "{:?} hit {:?} for {:?} damage! Health: {:?}",
-            goblin.enemy_type, player.name, goblin.damage, player.hp
-        );
+    println!("{:?}", player.inventory.peek());
 
-        goblin.take_damage(10);
-
-        println!(
-            "{:?} hit {:?} for {:?} damage! Health: {:?}",
-            player.name, goblin.enemy_type, 10, goblin.hp
-        );
-    }
+    rand_encounter(&mut player);
 }

@@ -1,8 +1,9 @@
-use crate::player::Player;
+use crate::{inventory::Inventory, player::Player};
 
 #[derive(Debug)]
 pub(crate) enum Type {
     Goblin,
+    Evil,
 }
 
 #[derive(Debug)]
@@ -11,6 +12,8 @@ pub(crate) struct Enemy {
     pub enemy_type: Type,
     pub hp: i32,
     pub damage: i32,
+
+    pub inventory: Inventory,
 }
 
 impl Enemy {
@@ -21,6 +24,17 @@ impl Enemy {
                 enemy_type,
                 hp: 35,
                 damage: 8,
+
+                inventory: Inventory::new(),
+            },
+
+            Type::Evil => Self {
+                name: String::from("evil"),
+                enemy_type,
+                hp: 1000000,
+                damage: 1000000,
+
+                inventory: Inventory::new(),
             },
         }
     }
@@ -35,5 +49,9 @@ impl Enemy {
 
     pub(crate) fn is_alive(&self) -> bool {
         self.hp > 0
+    }
+
+    pub(crate) fn killed(&self) {
+        println!("{} died! Dropped: {:?}", self.name, self.inventory.peek())
     }
 }
